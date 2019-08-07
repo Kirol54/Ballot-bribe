@@ -4,7 +4,8 @@ const ballot = artifacts.require("ballot");
 contract("ballot", async accounts => {
   let ballotInstance;
   beforeEach(async () => {
-    let bribeAmount;
+    let bribeAmountA;
+    let bribeAmountB;
     ballotInstance = await ballot.deployed();
     await ballotInstance.giveRightToVote(accounts[0]);
     await ballotInstance.giveRightToVote(accounts[1]);
@@ -19,21 +20,26 @@ contract("ballot", async accounts => {
   });
 
   it("vote was stored", async () => {
-    const proposal = 4;
-    const vote = await ballotInstance.vote(proposal, { from: accounts[1] });
+    const proposalB = 4;
+    const vote = await ballotInstance.vote(proposalB, { from: accounts[1] });
     const check = await ballotInstance.votedFor.call(accounts[1]);
-    assert.equal(proposal, check);
+    assert.equal(proposalB, check);
   });
 
-  it("bribe one of the account and check", async () => {
-    bribeAmount = 50000000000000000000; // 50 eth
+  it("bribe one of the account twice and check", async () => {
+    bribeAmountA = 25000000000000000000; // 25 eth
+    bribeAmountB = 25000000000000000000; // 25 eth
     const proposalA = 2;
-    let bribe = await ballotInstance.bribe(accounts[2], proposalA, {
+    let bribeA = await ballotInstance.bribe(accounts[2], proposalA, {
       from: accounts[0],
-      value: bribeAmount
+      value: bribeAmountA
+    });
+    let bribeB = await ballotInstance.bribe(accounts[2], proposalA, {
+      from: accounts[4],
+      value: bribeAmountB
     });
     let check = await ballotInstance.getBribeInfo.call(accounts[2]);
-    assert.equal(check._amount, bribeAmount);
+    assert.equal(check._amount, bribeAmountA + bribeAmountB);
     assert.equal(check._vote, proposalA);
   });
 

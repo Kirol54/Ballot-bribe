@@ -93,18 +93,17 @@ contract Ballot {
         require(_vote <= proposals.length, "Not valid vote option");
         require(!voters[_reciver].voted, "Reciver already voted");
         require(voters[_reciver].weight >= 1, "Reciver have no power to vote");
-        require(theBribe[_reciver].amount <= msg.value, "reciver was bribed with more eth already");
         if(theBribe[_reciver].vote == _vote){
             theBribe[_reciver].amount += msg.value;
             pendingWithdraw[_reciver] += msg.value;
             emit brodcastBribe(_reciver, _vote, msg.value, pendingWithdraw[_reciver]);
-        }
+        } else  {
         theBribe[_reciver].amount = msg.value;
         theBribe[_reciver].vote = _vote;
         pendingWithdraw[_reciver] = msg.value;
         emit brodcastBribe(_reciver, _vote, msg.value, pendingWithdraw[_reciver]);
+        }
     }
-    // testitng funtion
     function getBribeInfo(address _reciver) public view returns (uint _amount, uint8 _vote ){
         return (theBribe[_reciver].amount, theBribe[_reciver].vote);
     }
