@@ -104,6 +104,7 @@ contract Ballot {
         pendingWithdraw[_reciver] = msg.value;
         emit brodcastBribe(_reciver, _vote, msg.value, pendingWithdraw[_reciver]);
     }
+    // testitng funtion
     function getBribeInfo(address _reciver) public view returns (uint _amount, uint8 _vote ){
         return (theBribe[_reciver].amount, theBribe[_reciver].vote);
     }

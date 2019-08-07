@@ -26,16 +26,13 @@ contract("ballot", async accounts => {
   });
 
   it("bribe one of the account and check", async () => {
-    bribeAmount = 10000000;
+    bribeAmount = 50000000000000000000; // 50 eth
     const proposalA = 2;
-    console.log(await web3.eth.getBalance(accounts[0]));
     let bribe = await ballotInstance.bribe(accounts[2], proposalA, {
       from: accounts[0],
       value: bribeAmount
     });
-    console.log(await web3.eth.getBalance(accounts[0]));
     let check = await ballotInstance.getBribeInfo.call(accounts[2]);
-    assert(false);
     assert.equal(check._amount, bribeAmount);
     assert.equal(check._vote, proposalA);
   });
@@ -43,15 +40,12 @@ contract("ballot", async accounts => {
   it("two counter votes. transfer funds for bribed vote. correctly decided on winning proposal", async () => {
     const proposalA = 2;
     let initBalance = await web3.eth.getBalance(accounts[2]);
-    console.log(initBalance);
     const vote = await ballotInstance.vote(proposalA, { from: accounts[0] });
     const vote2 = await ballotInstance.vote(proposalA, { from: accounts[2] });
     const result = await ballotInstance.winningProposal.call();
-    // let diffrerence = afterVoteBalance - initBalance;
-    // assert.equal(diffrerence, bribeAmount);
     let afterVoteBalance = await web3.eth.getBalance(accounts[2]);
-    console.log(afterVoteBalance);
-    assert(false);
+    let diffrerence = afterVoteBalance - initBalance;
+    assert(diffrerence > web3.utils.toWei("49.99", "ether")); // based on bribe amount 50eth (-gas) NOT IDEAL
     assert.equal(proposalA, result);
   });
 });
