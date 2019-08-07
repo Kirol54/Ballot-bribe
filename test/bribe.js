@@ -11,6 +11,7 @@ contract("ballot", async accounts => {
     await ballotInstance.giveRightToVote(accounts[1]);
     await ballotInstance.giveRightToVote(accounts[2]);
     await ballotInstance.giveRightToVote(accounts[3]);
+    await ballotInstance.giveRightToVote(accounts[4]); // loads of transaction - to be optimized
   });
   it("should deploy contract and give voting rigts to at lest 2 addresses", async () => {
     const rightCheck = await ballotInstance.haveRightToVote.call(accounts[0]);
@@ -19,14 +20,14 @@ contract("ballot", async accounts => {
     assert.ok(rightCheck2);
   });
 
-  it("vote was stored", async () => {
+  it("should store a vote", async () => {
     const proposalB = 4;
     const vote = await ballotInstance.vote(proposalB, { from: accounts[1] });
     const check = await ballotInstance.votedFor.call(accounts[1]);
     assert.equal(proposalB, check);
   });
 
-  it("bribe one of the account twice and check", async () => {
+  it("should bribe one of the account twice and check if registered", async () => {
     bribeAmountA = 25000000000000000000; // 25 eth
     bribeAmountB = 25000000000000000000; // 25 eth
     const proposalA = 2;

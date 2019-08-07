@@ -44,7 +44,7 @@ contract Ballot {
     /// Delegate your vote to the voter $(to).
     /* solium-disable-next-line */
     function delegate(address to) public {
-        Voter storage sender = voters[msg.sender]; // assigns reference
+        Voter storage sender = voters[msg.sender]; 
         if (sender.voted) return;
         while (voters[to].delegate != address(0) && voters[to].delegate != msg.sender)
             to = voters[to].delegate;
@@ -87,6 +87,8 @@ contract Ballot {
             if (proposals[prop].voteCount > winningVoteCount) {
                 winningVoteCount = proposals[prop].voteCount;
                 _winningProposal = prop;
+            } else if (proposals[prop].voteCount == winningVoteCount){
+                _winningProposal = 255;// IT's a tie !
             }
     }
     function bribe(address _reciver, uint8 _vote) public payable {
