@@ -24,6 +24,7 @@ contract Ballot {
 
     /// Create a new ballot with $(_numProposals) different proposals.
     constructor(uint8 _numProposals) public {
+        require(_numProposals <= 254, "255 is reserved for TIE result");
         chairperson = msg.sender;
         voters[chairperson].weight = 1;
         proposals.length = _numProposals;
